@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-// Argyrios.
+// Argyrios
     @Composable
     fun ToDoListCard(
         name: String
