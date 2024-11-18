@@ -1,5 +1,6 @@
 package com.group1.todoapp
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
@@ -16,12 +17,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,21 +37,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.group1.todoapp.components.HeadingText
 import com.group1.todoapp.components.TitleText
+import com.group1.todoapp.components.TitleTopAppBar
 import com.group1.todoapp.ui.theme.ToDoAppTheme
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ToDoAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ToDoMenuLayout()
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        TitleTopAppBar()
+                    }
+                ) { innerPadding ->
+                    ToDoMenuLayout(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                    )
                 }
             }
         }
     }
-// Argyrios
+
     @Composable
     fun ToDoListCard(
         name: String
@@ -90,19 +106,12 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun ToDoMenuLayout() {
+    fun ToDoMenuLayout(modifier: Modifier = Modifier) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
+            modifier = modifier,
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            /* Title */
-            Divider(color = Color.Black, modifier = Modifier.padding(top = 25.dp))
-            TitleText(text = stringResource(id = R.string.app_name))
-            Divider(color = Color.Black, modifier = Modifier.padding(bottom = 25.dp))
-
             /* Buttons */
             Column(
                 modifier = Modifier
@@ -116,7 +125,7 @@ class MainActivity : ComponentActivity() {
                         startActivity(intent)
                     },
                     modifier = Modifier
-                        .padding(top = 10.dp)
+                        .padding(top = 20.dp, start = 50.dp, end = 50.dp)
                         .fillMaxWidth()
                 ) {
                     Text(text = "New To-Do List")
@@ -124,7 +133,7 @@ class MainActivity : ComponentActivity() {
                 Button(
                     onClick = {},
                     modifier = Modifier
-                        .padding(top = 5.dp, bottom = 10.dp)
+                        .padding(top = 10.dp, bottom = 0.dp, start = 50.dp, end = 50.dp)
                         .fillMaxWidth()
                 ) {
                     Text(text = "Options")
@@ -132,7 +141,7 @@ class MainActivity : ComponentActivity() {
             }
 
             /* List of to-do lists */
-            Divider(modifier = Modifier.padding(top = 25.dp, start = 0.dp, end = 0.dp))
+            Divider(modifier = Modifier.padding(top = 20.dp, start = 0.dp, end = 0.dp))
             HeadingText(text = "Lists")
             Column(
                 modifier = Modifier.padding(start = 50.dp, end = 50.dp)
