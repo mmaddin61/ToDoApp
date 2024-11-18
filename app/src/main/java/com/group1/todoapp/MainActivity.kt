@@ -111,7 +111,10 @@ class MainActivity : ComponentActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        val intent = Intent(this@MainActivity, TodoListActivity::class.java)
+                        startActivity(intent)
+                    },
                     modifier = Modifier
                         .padding(top = 10.dp)
                         .fillMaxWidth()
@@ -119,7 +122,7 @@ class MainActivity : ComponentActivity() {
                     Text(text = "New To-Do List")
                 }
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {},
                     modifier = Modifier
                         .padding(top = 5.dp, bottom = 10.dp)
                         .fillMaxWidth()
