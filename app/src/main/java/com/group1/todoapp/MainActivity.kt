@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun ToDoListCard(
-        name: String
+        toDoData: TodoData
     ) {
         ElevatedCard(
             //border = BorderStroke(width = 1.dp, color = Color.Black),
@@ -84,7 +84,9 @@ class MainActivity : ComponentActivity() {
             ) {
                 TextButton(
                     onClick = {
-                        val intent = Intent(this@MainActivity, TaskDetailActivity::class.java)
+                        val intent = Intent(this@MainActivity, TaskDetailActivity::class.java).apply {
+                            putExtra("toDoListIndex", Datasource().findIndexOf(toDoData))
+                        }
                         try {
                             startActivity(intent)
                         } catch (e: ActivityNotFoundException) {
@@ -98,7 +100,7 @@ class MainActivity : ComponentActivity() {
                     Text("View")
                 }
                 Text(
-                    text = name,
+                    text = toDoData.title,
                     fontStyle = FontStyle.Italic,
                     modifier = Modifier
                         .padding(end = 15.dp)
@@ -116,7 +118,7 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.padding(start = 50.dp, end = 50.dp)
         ) {
             items(toDoDataList) {toDoList ->
-                ToDoListCard(name = toDoList.title)
+                ToDoListCard(toDoData = toDoList)
             }
         }
     }

@@ -31,6 +31,10 @@ class Datasource {
         return todoLists.toList()
     }
 
+    fun findIndexOf(toDoData: TodoData): Int {
+        return fetchToDoLists().indexOf(toDoData)
+    }
+
     fun fetchToDoLists(): List<TodoData> {
         return testDataFactory(listCount = 3, taskCount = 5)
     }
