@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.group1.todoapp.components.HeadingText
 import com.group1.todoapp.components.TitleText
 import com.group1.todoapp.components.TitleTopAppBar
+import com.group1.todoapp.data.Datasource
 import com.group1.todoapp.ui.theme.ToDoAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -106,6 +109,19 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
+    fun ToDoListCardList(
+        toDoDataList: List<TodoData>
+    ) {
+        LazyColumn(
+            modifier = Modifier.padding(start = 50.dp, end = 50.dp)
+        ) {
+            items(toDoDataList) {toDoList ->
+                ToDoListCard(name = toDoList.title)
+            }
+        }
+    }
+
+    @Composable
     fun ToDoMenuLayout(modifier: Modifier = Modifier) {
         Column(
             modifier = modifier,
@@ -143,12 +159,8 @@ class MainActivity : ComponentActivity() {
             /* List of to-do lists */
             Divider(modifier = Modifier.padding(top = 20.dp, start = 0.dp, end = 0.dp))
             HeadingText(text = "Lists")
-            Column(
-                modifier = Modifier.padding(start = 50.dp, end = 50.dp)
-            ) {
-                ToDoListCard(name = "Test List")
-                ToDoListCard(name = "Shopping List")
-            }
+
+            ToDoListCardList(toDoDataList = Datasource().fetchToDoLists())
         }
     }
 
