@@ -74,7 +74,7 @@ class TodoListActivity : ComponentActivity() {
             // Label Text
             TextField (
                 value = task.title,
-                onValueChange = { task.title = it } ,
+                onValueChange = { /*task.title = it*/ } ,
                 modifier = Modifier
                     .weight(1f) // Makes TextField take the remaining space
                     .height(48.dp)
@@ -86,7 +86,7 @@ class TodoListActivity : ComponentActivity() {
             // Text Input Field
             TextField(
                 value = task.description,
-                onValueChange = { task.description = it },
+                onValueChange = { /*task.description = it*/ },
                 modifier = Modifier
                     .weight(1f) // Makes TextField take the remaining space
                     .height(48.dp)
@@ -122,7 +122,7 @@ class TodoListActivity : ComponentActivity() {
                 }
 
                 Button(
-                    onClick = { todoData.tasks.add(TaskData("task ${todoData.tasks.count()}", "", false)) },
+                    onClick = { /*todoData.tasks.add(TaskData("task ${todoData.tasks.count()}", "", false))*/ },
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth(),

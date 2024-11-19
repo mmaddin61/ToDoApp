@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                 TextButton(
                     onClick = {
                         val intent = Intent(this@MainActivity, TaskDetailActivity::class.java).apply {
-                            putExtra("toDoListIndex", Datasource().findIndexOf(toDoData))
+                            putExtra("toDoListIndex", Datasource.findIndexOf(toDoData))
                         }
                         try {
                             startActivity(intent)
@@ -162,7 +162,7 @@ class MainActivity : ComponentActivity() {
             Divider(modifier = Modifier.padding(top = 20.dp, start = 0.dp, end = 0.dp))
             HeadingText(text = "Lists")
 
-            ToDoListCardList(toDoDataList = Datasource().fetchToDoLists())
+            ToDoListCardList(toDoDataList = Datasource.fetchToDoLists())
         }
     }
 

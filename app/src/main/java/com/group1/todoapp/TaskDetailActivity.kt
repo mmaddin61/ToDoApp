@@ -1,9 +1,6 @@
 package com.group1.todoapp
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -19,24 +16,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.group1.todoapp.components.BackTitleTopAppBar
-import com.group1.todoapp.components.TitleText
 import com.group1.todoapp.data.Datasource
+import com.group1.todoapp.ui.TaskDetailUiState
+import com.group1.todoapp.ui.TaskDetailViewModel
 import com.group1.todoapp.ui.theme.ToDoAppTheme
 
 class TaskDetailActivity : ComponentActivity() {
@@ -46,7 +44,11 @@ class TaskDetailActivity : ComponentActivity() {
         setContent {
             ToDoAppTheme {
                 val toDoDataIndex = intent.getIntExtra("toDoListIndex", 0)
-                val toDoData: TodoData = Datasource().fetchToDoLists()[toDoDataIndex]
+                val toDoData: TodoData = Datasource.fetchToDoLists()[toDoDataIndex]
+                val viewModel: TaskDetailViewModel = viewModel()
+                val uiState: TaskDetailUiState by viewModel.uiState.collectAsState()
+                viewModel.updateTaskDetailState(toDoData)
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
@@ -59,7 +61,7 @@ class TaskDetailActivity : ComponentActivity() {
                     }
                 ) { innerPadding ->
                     TaskDetailLayout(
-                        toDoData = toDoData,
+                        toDoData = uiState.todoData,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -68,7 +70,10 @@ class TaskDetailActivity : ComponentActivity() {
     }
 
     @Composable
-    fun TaskCard(task: TaskData) {
+    fun TaskCard(
+        task: TaskData
+    ) {
+        val viewModel: TaskDetailViewModel = viewModel()
         ElevatedCard(
             //border = BorderStroke(width = 1.dp, color = Color.Black),
             colors = CardDefaults.cardColors(
@@ -83,7 +88,9 @@ class TaskDetailActivity : ComponentActivity() {
             ) {
                 Checkbox(
                     checked = task.finished,
-                    onCheckedChange = {/*TODO*/},
+                    onCheckedChange = {
+                        viewModel.onTaskFinishedChange(task, !task.finished)
+                    },
                     modifier = Modifier
                         .padding(start = 10.dp)
                 )
@@ -116,12 +123,16 @@ class TaskDetailActivity : ComponentActivity() {
     }
 
     @Composable
-    fun TaskCardList(tasks: List<TaskData>) {
+    fun TaskCardList(
+        tasks: List<TaskData>
+    ) {
         LazyColumn(
             modifier = Modifier.padding(start = 50.dp, end = 50.dp, top = 10.dp)
         ) {
             items(tasks) {task ->
-                TaskCard(task = task)
+                TaskCard(
+                    task = task
+                )
             }
         }
     }
@@ -136,7 +147,9 @@ class TaskDetailActivity : ComponentActivity() {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TaskCardList(tasks = toDoData.tasks)
+            TaskCardList(
+                tasks = toDoData.tasks
+            )
         }
     }
 
