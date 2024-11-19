@@ -43,11 +43,11 @@ class TaskDetailActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ToDoAppTheme {
-                val toDoDataIndex = intent.getIntExtra("toDoListIndex", 0)
-                val toDoData: TodoData = Datasource.fetchToDoLists()[toDoDataIndex]
-                val viewModel: TaskDetailViewModel = viewModel()
-                val uiState: TaskDetailUiState by viewModel.uiState.collectAsState()
-                viewModel.updateTaskDetailState(toDoData)
+                val toDoDataIndex = intent.getIntExtra("toDoListIndex", 0) // Get the index of the to-do list to be displayed
+                val toDoData: TodoData = Datasource.fetchToDoLists()[toDoDataIndex] // Get to-do list data using the index
+                val viewModel: TaskDetailViewModel = viewModel() // Get the ViewModel
+                val uiState: TaskDetailUiState by viewModel.uiState.collectAsState() // Get the UI state
+                viewModel.updateTaskDetailState(toDoData) // Store the to-do list data in the UI state
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),

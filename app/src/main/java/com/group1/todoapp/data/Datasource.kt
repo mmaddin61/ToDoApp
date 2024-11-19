@@ -65,6 +65,12 @@ object Datasource {
         )
     )
 
+    /**
+     * Generates a list of tasks for testing purposes.
+     *
+     * @param count Number of tasks to generate.
+     * @return List of tasks.
+     */
     private fun taskDataFactory(count: Int = 1): MutableList<TaskData> {
         val tasks: MutableList<TaskData> = emptyList<TaskData>().toMutableList()
         for (i in 1..count) {
@@ -79,6 +85,13 @@ object Datasource {
         return tasks
     }
 
+    /**
+     * Generates a list of to-do lists and tasks for testing purposes.
+     *
+     * @param listCount Number of to-do lists to generate.
+     * @param taskCount Number of tasks to generate for each to-do list.
+     * @return Test to-do list data.
+     */
     private fun testDataFactory(listCount: Int = 1, taskCount: Int = 1): List<TodoData> {
         val todoLists: MutableList<TodoData> = emptyList<TodoData>().toMutableList()
         for (i in 1..listCount) {
@@ -92,8 +105,18 @@ object Datasource {
         return todoLists.toList()
     }
 
+    /**
+     * Gets the index of the to-do list from stored data.
+     *
+     * @param toDoData To-do list to get the index of.
+     * @return The index of the to-do list or -1 if it was not found.
+     */
     fun findIndexOf(toDoData: TodoData): Int {
         toDoLists.forEach {
+            // The titles are compared as changing something like a single
+            // task in the to-do list's tasks can result in the equals
+            // operator returning false.
+            // TODO: Add a business rule preventing two tasks from having the same title
             if (it.title == toDoData.title) {
                 return toDoLists.indexOf(it)
             }
@@ -101,10 +124,19 @@ object Datasource {
         return -1
     }
 
+    /**
+     * @return List of stored to-do lists.
+     */
     fun fetchToDoLists(): List<TodoData> {
         return toDoLists.toList()
     }
 
+    /**
+     * Updates a stored to-do list.
+     *
+     * @param index Index of the to-do list.
+     * @param toDoData To-do list to store.
+     */
     fun updateToDoLists(index: Int, toDoData: TodoData) {
         if (index >= 0 && index < toDoLists.size) {
             toDoLists[index] = toDoData
@@ -113,10 +145,21 @@ object Datasource {
         }
     }
 
+    /**
+     * Adds a to-do list to stored data.
+     *
+     * @param toDoList To-do list to store.
+     */
     fun addToDoList(toDoList: TodoData) {
         toDoLists.add(toDoList)
     }
 
+    /**
+     * Adds a task to a stored to-do list.
+     *
+     * @param toDoData To-do list the task is related to.
+     * @param task Task to store.
+     */
     fun addTask(toDoData: TodoData, task: TaskData) {
         val index = findIndexOf(toDoData)
         if (index != -1) {
