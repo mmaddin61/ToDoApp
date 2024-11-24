@@ -163,6 +163,25 @@ class MainActivity : ComponentActivity() {
             HeadingText(text = "Lists")
 
             ToDoListCardList(toDoDataList = Datasource.fetchToDoLists())
+
+            // Add the new Help button
+            Column(
+                modifier = modifier,
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(
+                    onClick = {
+                        val intent = Intent(this@MainActivity, HelpActivity::class.java)
+                        startActivity(intent)
+                    },
+                    modifier = Modifier
+                        .padding(bottom = 10.dp, start = 50.dp, end = 50.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(text = "Help")
+                }
+            }
         }
     }
 
