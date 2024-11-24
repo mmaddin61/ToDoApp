@@ -122,6 +122,7 @@ class TaskDetailActivity : ComponentActivity() {
         }
     }
 
+
     @Composable
     fun TaskCardList(
         tasks: List<TaskData>
