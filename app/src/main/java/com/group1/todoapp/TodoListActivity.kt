@@ -1,5 +1,6 @@
 package com.group1.todoapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -41,23 +42,26 @@ class TodoListActivity : ComponentActivity() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Label Text
             Text(
                 text = hintText,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(end = 8.dp)
             )
 
-            // Text Input Field
             TextField(
                 value = text,
                 onValueChange = onTextChange,
                 modifier = Modifier
-                    .weight(1f) // Makes TextField take the remaining space
+                    .weight(1f)
                     .height(48.dp)
                     .fillMaxWidth()
                     .padding(16.dp),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                )
             )
         }
     }
@@ -71,24 +75,22 @@ class TodoListActivity : ComponentActivity() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Label Text
             TextField (
                 value = task.title,
                 onValueChange = { /*task.title = it TODO*/ } ,
                 modifier = Modifier
-                    .weight(1f) // Makes TextField take the remaining space
+                    .weight(1f)
                     .height(48.dp)
                     .fillMaxWidth()
                     .padding(16.dp),
                 shape = RoundedCornerShape(16.dp)
             )
 
-            // Text Input Field
             TextField(
                 value = task.description,
                 onValueChange = { /*task.description = it TODO*/ },
                 modifier = Modifier
-                    .weight(1f) // Makes TextField take the remaining space
+                    .weight(1f)
                     .height(48.dp)
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -139,6 +141,18 @@ class TodoListActivity : ComponentActivity() {
                 ) {
                     Text("Confirm")
                 }
+                Button(
+                    onClick = {
+                        val intent = Intent(this@TodoListActivity, MainActivity::class.java)
+                        startActivity(intent)
+                    },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text("Back")
+                }
             }
         }
     }
@@ -146,7 +160,7 @@ class TodoListActivity : ComponentActivity() {
     @Preview(showBackground = true)
     @Composable
     fun TodoListPreview() {
-        val todoData = TodoData("", mutableListOf<TaskData>())
+        val todoData = TodoData("", mutableListOf<TaskData>(TaskData("test", "description", false)))
         ToDoAppTheme {
             TodoListLayout(todoData, {})
         }
