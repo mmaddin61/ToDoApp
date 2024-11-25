@@ -9,13 +9,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.group1.todoapp.data.Datasource
 import com.group1.todoapp.ui.theme.ToDoAppTheme
 
 class HelpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ToDoAppTheme {
+            ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
                 HelpContent()
             }
         }

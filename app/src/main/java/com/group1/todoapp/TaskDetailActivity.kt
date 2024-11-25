@@ -42,7 +42,7 @@ class TaskDetailActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ToDoAppTheme {
+            ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
                 val toDoDataIndex = intent.getIntExtra("toDoListIndex", 0) // Get the index of the to-do list to be displayed
                 val toDoData: TodoData = Datasource.fetchToDoLists()[toDoDataIndex] // Get to-do list data using the index
                 val viewModel: TaskDetailViewModel = viewModel() // Get the ViewModel

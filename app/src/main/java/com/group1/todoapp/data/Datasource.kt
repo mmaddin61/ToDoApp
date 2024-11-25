@@ -1,11 +1,14 @@
 package com.group1.todoapp.data
 
 import android.util.Log
+import androidx.compose.foundation.isSystemInDarkTheme
 import com.group1.todoapp.TaskData
 import com.group1.todoapp.TodoData
 
 const val TAG = "Datasource"
 object Datasource {
+
+    private var isDarkTheme: Boolean = false
 
     private val toDoLists: MutableList<TodoData> = mutableListOf(
         TodoData(
@@ -168,5 +171,13 @@ object Datasource {
             val newData = TodoData(toDoData.title, newTasks.toList())
             toDoLists[index] = newData
         }
+    }
+
+    fun isDarkTheme(): Boolean {
+        return isDarkTheme
+    }
+
+    fun setDarkTheme(darkTheme: Boolean) {
+        isDarkTheme = darkTheme
     }
 }

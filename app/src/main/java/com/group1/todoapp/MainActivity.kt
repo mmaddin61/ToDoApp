@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ToDoAppTheme {
+            ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
@@ -144,7 +144,10 @@ class MainActivity : ComponentActivity() {
                     Text(text = "New To-Do List")
                 }
                 Button(
-                    onClick = {},
+                    onClick = {
+                        val intent = Intent(this@MainActivity, PreferencesActivity::class.java)
+                        startActivity(intent)
+                    },
                     modifier = Modifier
                         .padding(top = 10.dp, bottom = 0.dp, start = 50.dp, end = 50.dp)
                         .fillMaxWidth()

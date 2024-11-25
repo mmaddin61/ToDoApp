@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.group1.todoapp.components.TitleText
+import com.group1.todoapp.data.Datasource
 import com.group1.todoapp.ui.theme.ToDoAppTheme
 
 class TodoListActivity : ComponentActivity() {
@@ -24,7 +25,7 @@ class TodoListActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            ToDoAppTheme {
+            ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
                     TodoListLayout(todoData, {})
                 }

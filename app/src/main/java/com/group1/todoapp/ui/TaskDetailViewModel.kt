@@ -63,4 +63,8 @@ class TaskDetailViewModel : ViewModel() {
             )
         }
     }
+
+    fun onDarkModePreferenceChange(darkMode: Boolean) {
+        Datasource.setDarkTheme(darkMode)
+    }
 }
