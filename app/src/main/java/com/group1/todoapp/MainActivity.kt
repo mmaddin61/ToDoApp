@@ -175,7 +175,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxWidth()
                 ) {
                     // Add the image "help.jpg" to this button
-                    Image(painter = painterResource(id = R.drawable.help), contentDescription = "Help Image")
+                    //Image(painter = painterResource(id = R.drawable.help), contentDescription = "Help Image")
                     Text(text = "Help")
                 }
             }
