@@ -2,6 +2,7 @@ package com.group1.todoapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -22,20 +23,18 @@ class TodoListActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val todoData = TodoData("", mutableListOf<TaskData>())
-
         enableEdgeToEdge()
         setContent {
             ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
-                Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
-                    TodoListLayout(todoData, {})
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    TodoListLayout()
                 }
             }
         }
     }
 
     @Composable
-    fun InputField(hintText: String, text: String, onTextChange: (String) -> Unit) {
+    fun TitleDisplay(title : MutableState< String >) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -44,19 +43,19 @@ class TodoListActivity : ComponentActivity() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = hintText,
+                text = "Title",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(end = 8.dp)
             )
 
             TextField(
-                value = text,
-                onValueChange = onTextChange,
+                value = title.value,
+                onValueChange = {
+                    title.value = it
+                },
                 modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                    .fillMaxWidth(),
+
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
@@ -68,7 +67,7 @@ class TodoListActivity : ComponentActivity() {
     }
 
     @Composable
-    fun DisplayTask(task:TaskData) {
+    fun DisplayTask(title : MutableState<String>, desc : MutableState<String>) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -77,31 +76,29 @@ class TodoListActivity : ComponentActivity() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             TextField (
-                value = task.title,
-                onValueChange = { /*task.title = it TODO*/ } ,
+                value = title.value,
+                onValueChange = { title.value = it } ,
                 modifier = Modifier
                     .weight(1f)
-                    .height(48.dp)
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                    .fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp)
             )
 
             TextField(
-                value = task.description,
-                onValueChange = { /*task.description = it TODO*/ },
+                value = desc.value,
+                onValueChange = { desc.value = it },
                 modifier = Modifier
                     .weight(1f)
-                    .height(48.dp)
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                    .fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp)
             )
         }
     }
 
     @Composable
-    fun TodoListLayout(todoData : TodoData, confirmTodo : () -> Unit) {
+    fun TodoListLayout() {
+        val title = remember { mutableStateOf("") }
+        val tasks = remember { mutableStateOf(listOf<MutableState<TaskData>>()) }
 
         Column(
             modifier = Modifier
@@ -118,23 +115,34 @@ class TodoListActivity : ComponentActivity() {
             Column(
                 modifier = Modifier.padding(start = 50.dp, end = 50.dp)
             ) {
-                InputField("Title", todoData.title, { todoData.title = it })
+                TitleDisplay(title)
 
-                todoData.tasks.forEach() {
-                    task -> DisplayTask(task)
+                tasks.value.forEach() {
+                    val taskTitle = remember { mutableStateOf(it.value.title) }
+                    val taskDesc = remember { mutableStateOf(it.value.description) }
+                    DisplayTask(taskTitle, taskDesc)
+                    it.value = TaskData(taskTitle.value, taskDesc.value, false)
                 }
 
                 Button(
-                    onClick = { /*todoData.tasks.add(TaskData("task ${todoData.tasks.count()}", "", false)) TODO*/ },
+                    onClick = {
+                        tasks.value += mutableStateOf(TaskData("task ${tasks.value.count()}", "", false))
+                        Log.i("TODOLIST", "Adding Task")
+                    },
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("Add Task")
+                    Text("New Task")
                 }
                 Button(
-                    onClick = confirmTodo,
+                    onClick = {
+                        UserDataFactory.AddTodo(TodoData(0, title.value, tasks.value.map { task -> task.value }.toMutableList()))
+
+                        val intent = Intent(this@TodoListActivity, MainActivity::class.java)
+                        startActivity(intent)
+                    },
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth(),
@@ -161,9 +169,8 @@ class TodoListActivity : ComponentActivity() {
     @Preview(showBackground = true)
     @Composable
     fun TodoListPreview() {
-        val todoData = TodoData("", mutableListOf<TaskData>(TaskData("test", "description", false)))
         ToDoAppTheme {
-            TodoListLayout(todoData, {})
+            TodoListLayout()
         }
     }
 }

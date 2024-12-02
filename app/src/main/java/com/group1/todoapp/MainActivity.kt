@@ -3,6 +3,7 @@ package com.group1.todoapp
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
+import android.service.autofill.UserData
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,6 +43,9 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        UserDataFactory.LoadUserData(filesDir.path)
+
         enableEdgeToEdge()
         setContent {
             ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
@@ -59,6 +63,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        UserDataFactory.SaveUserData(filesDir.path)
     }
 
     @Composable
@@ -80,7 +90,7 @@ class MainActivity : ComponentActivity() {
                 TextButton(
                     onClick = {
                         val intent = Intent(this@MainActivity, TaskDetailActivity::class.java).apply {
-                            putExtra("toDoListIndex", Datasource.findIndexOf(toDoData))
+                            putExtra("toDoListIndex", toDoData.id)
                         }
                         try {
                             startActivity(intent)
@@ -160,7 +170,7 @@ class MainActivity : ComponentActivity() {
             Divider(modifier = Modifier.padding(top = 20.dp, start = 0.dp, end = 0.dp))
             HeadingText(text = "Lists")
 
-            ToDoListCardList(toDoDataList = Datasource.fetchToDoLists())
+            ToDoListCardList(toDoDataList = UserDataFactory.GetTodoList())
 
             // Add the new Help button
             Column(

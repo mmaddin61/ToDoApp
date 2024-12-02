@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.group1.todoapp.TaskData
 import com.group1.todoapp.TodoData
+import com.group1.todoapp.UserDataFactory
 import com.group1.todoapp.data.Datasource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,11 +32,12 @@ class TaskDetailViewModel : ViewModel() {
             val newTasks: MutableList<TaskData> = toDoData.tasks.toMutableList()
             newTasks[taskIndex] = TaskData(task.title, task.description, isChecked) // Update the task
             val newToDoData: TodoData = TodoData(
+                id = toDoData.id,
                 title = toDoData.title,
-                tasks = newTasks.toList()
+                tasks = newTasks
             )
             updateTaskDetailState(newToDoData) // Update UI state
-            Datasource.updateToDoLists(Datasource.findIndexOf(toDoData), newToDoData) // Store the changes
+            UserDataFactory.UpdateTodo(toDoData.id, toDoData)
         } else {
             Log.e(TAG, "Task named '${task.title}' not found!")
         }
@@ -48,7 +50,7 @@ class TaskDetailViewModel : ViewModel() {
      * @param tasks List of the to-do list's tasks.
      */
     fun updateTaskDetailState(title: String, tasks: MutableList<TaskData>) {
-        updateTaskDetailState(TodoData(title, tasks))
+        updateTaskDetailState(TodoData(0, title, tasks))
     }
 
     /**

@@ -12,8 +12,9 @@ object Datasource {
 
     private val toDoLists: MutableList<TodoData> = mutableListOf(
         TodoData(
+            id = 0,
             title = "Shopping List",
-            tasks = listOf(
+            tasks = mutableListOf(
                 TaskData(
                     title = "Milk",
                     description = "1gal 2% milk",
@@ -37,8 +38,9 @@ object Datasource {
             )
         ),
         TodoData(
+            id = 0,
             title = "Chores",
-            tasks = listOf(
+            tasks = mutableListOf(
                 TaskData(
                     title = "Clean garage",
                     description = "Sweep the garage floor.",
@@ -100,6 +102,7 @@ object Datasource {
         for (i in 1..listCount) {
             todoLists.add(
                 TodoData(
+                    id = 0,
                     title = "Test List $i",
                     tasks = taskDataFactory(taskCount)
                 )
@@ -168,7 +171,7 @@ object Datasource {
         if (index != -1) {
             val newTasks = toDoData.tasks.toMutableList()
             newTasks.add(task)
-            val newData = TodoData(toDoData.title, newTasks.toList())
+            val newData = TodoData(0, toDoData.title, newTasks.toMutableList())
             toDoLists[index] = newData
         }
     }

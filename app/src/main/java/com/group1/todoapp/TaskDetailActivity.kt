@@ -44,7 +44,7 @@ class TaskDetailActivity : ComponentActivity() {
         setContent {
             ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
                 val toDoDataIndex = intent.getIntExtra("toDoListIndex", 0) // Get the index of the to-do list to be displayed
-                val toDoData: TodoData = Datasource.fetchToDoLists()[toDoDataIndex] // Get to-do list data using the index
+                val toDoData: TodoData = UserDataFactory.GetTodo(toDoDataIndex) // Get to-do list data using the index
                 val viewModel: TaskDetailViewModel = viewModel() // Get the ViewModel
                 val uiState: TaskDetailUiState by viewModel.uiState.collectAsState() // Get the UI state
                 viewModel.updateTaskDetailState(toDoData) // Store the to-do list data in the UI state
@@ -159,6 +159,7 @@ class TaskDetailActivity : ComponentActivity() {
     fun TaskDetailPreview() {
         ToDoAppTheme {
             val toDoData: TodoData = TodoData(
+                id = 0,
                 title = "Test List",
                 tasks = mutableListOf(
                     TaskData(title = "Task 1", description = "Task 1 description", finished = false),
