@@ -19,16 +19,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.group1.todoapp.components.BackTitleTopAppBar
 import com.group1.todoapp.data.Datasource
+import com.group1.todoapp.data.PreferencesRepository
 import com.group1.todoapp.ui.TaskDetailViewModel
 import com.group1.todoapp.ui.theme.ToDoAppTheme
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class PreferencesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +100,12 @@ class PreferencesActivity : ComponentActivity() {
     fun PreferencesLayout(
         modifier: Modifier = Modifier
     ) {
+        val context = LocalContext.current
+        val scope = rememberCoroutineScope()
+        val repo = PreferencesRepository(context)
+
+        var darkMode by rememberSaveable { mutableStateOf("") }
+
         Column(
             modifier = modifier,
             verticalArrangement = Arrangement.Top,
@@ -99,7 +115,9 @@ class PreferencesActivity : ComponentActivity() {
                 name = "Dark Mode",
                 isChecked = Datasource.isDarkTheme(),
                 onCheckedChange = {
-                    Datasource.setDarkTheme(!Datasource.isDarkTheme())
+                    scope.launch {
+                        repo.setDarkMode(repo.isDarkMode.first() ?: false)
+                    }
                     finish()
                     startActivity(intent)
                 }
