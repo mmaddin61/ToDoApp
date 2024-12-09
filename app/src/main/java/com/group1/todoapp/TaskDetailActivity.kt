@@ -26,6 +26,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,11 +43,14 @@ class TaskDetailActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
+            val viewModel: TaskDetailViewModel = viewModel() // Get the ViewModel
+            viewModel.updateDarkModePreference(Datasource.isDarkTheme(LocalContext.current))
+            val uiState: TaskDetailUiState by viewModel.uiState.collectAsState() // Get the UI state
+
+            ToDoAppTheme(darkTheme = uiState.darkMode) {
                 val toDoDataIndex = intent.getIntExtra("toDoListIndex", 0) // Get the index of the to-do list to be displayed
                 val toDoData: TodoData = UserDataFactory.GetTodo(toDoDataIndex) // Get to-do list data using the index
-                val viewModel: TaskDetailViewModel = viewModel() // Get the ViewModel
-                val uiState: TaskDetailUiState by viewModel.uiState.collectAsState() // Get the UI state
+
                 viewModel.updateTaskDetailState(toDoData) // Store the to-do list data in the UI state
 
                 Scaffold(

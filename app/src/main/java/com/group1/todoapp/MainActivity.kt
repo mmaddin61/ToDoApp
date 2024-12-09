@@ -28,17 +28,25 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.group1.todoapp.components.HeadingText
 import com.group1.todoapp.components.TitleTopAppBar
 import com.group1.todoapp.data.Datasource
+import com.group1.todoapp.data.PreferencesRepository
+import com.group1.todoapp.ui.TaskDetailUiState
+import com.group1.todoapp.ui.TaskDetailViewModel
 import com.group1.todoapp.ui.theme.ToDoAppTheme
 
+private const val TAG = "MainActivity"
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +57,11 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
+            val viewModel: TaskDetailViewModel = viewModel()
+            viewModel.updateDarkModePreference(Datasource.isDarkTheme(LocalContext.current))
+            val uiState: TaskDetailUiState by viewModel.uiState.collectAsState()
+
+            ToDoAppTheme(darkTheme = uiState.darkMode) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {

@@ -7,16 +7,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.group1.todoapp.data.Datasource
+import com.group1.todoapp.ui.TaskDetailUiState
+import com.group1.todoapp.ui.TaskDetailViewModel
 import com.group1.todoapp.ui.theme.ToDoAppTheme
 
 class HelpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
+            val viewModel: TaskDetailViewModel = viewModel()
+            viewModel.updateDarkModePreference(Datasource.isDarkTheme(LocalContext.current))
+            val uiState: TaskDetailUiState by viewModel.uiState.collectAsState()
+            ToDoAppTheme(darkTheme = uiState.darkMode) {
                 HelpContent()
             }
         }

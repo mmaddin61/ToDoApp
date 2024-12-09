@@ -1,9 +1,14 @@
 package com.group1.todoapp.data
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import com.group1.todoapp.TaskData
 import com.group1.todoapp.TodoData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 const val TAG = "Datasource"
 object Datasource {
@@ -176,11 +181,17 @@ object Datasource {
         }
     }
 
-    fun isDarkTheme(): Boolean {
-        return isDarkTheme
+    fun isDarkTheme(context: Context): Boolean {
+        var darkMode: Boolean = false
+        CoroutineScope(Dispatchers.Default).launch {
+            darkMode = PreferencesRepository(context).isDarkMode.first() ?: false
+        }
+        return darkMode
     }
 
-    fun setDarkTheme(darkTheme: Boolean) {
-        isDarkTheme = darkTheme
+    fun setDarkTheme(darkTheme: Boolean, context: Context) {
+        CoroutineScope(Dispatchers.Default).launch {
+            PreferencesRepository(context).setDarkMode(darkTheme)
+        }
     }
 }

@@ -1,15 +1,21 @@
 package com.group1.todoapp.ui
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.group1.todoapp.TaskData
 import com.group1.todoapp.TodoData
 import com.group1.todoapp.UserDataFactory
 import com.group1.todoapp.data.Datasource
+import com.group1.todoapp.data.PreferencesRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 const val TAG = "TaskDetailViewModel"
 class TaskDetailViewModel : ViewModel() {
@@ -66,7 +72,25 @@ class TaskDetailViewModel : ViewModel() {
         }
     }
 
-    fun onDarkModePreferenceChange(darkMode: Boolean) {
-        Datasource.setDarkTheme(darkMode)
+    fun updateDarkModePreference(darkMode: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                darkMode = darkMode
+            )
+        }
+    }
+
+    fun onDarkModePreferenceChange(darkMode: Boolean, context: Context) {
+        updateDarkModePreference(darkMode)
+
+        Datasource.setDarkTheme(darkMode, context)
+    }
+
+    fun isDarkMode(context: Context): Boolean {
+        var darkMode = false
+        CoroutineScope(Dispatchers.Default).launch {
+            darkMode = PreferencesRepository(context).isDarkMode.first() ?: false
+        }
+        return darkMode
     }
 }

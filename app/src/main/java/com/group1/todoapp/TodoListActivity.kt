@@ -13,10 +13,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.group1.todoapp.components.TitleText
 import com.group1.todoapp.data.Datasource
+import com.group1.todoapp.ui.TaskDetailUiState
+import com.group1.todoapp.ui.TaskDetailViewModel
 import com.group1.todoapp.ui.theme.ToDoAppTheme
 
 class TodoListActivity : ComponentActivity() {
@@ -25,7 +29,10 @@ class TodoListActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
+            val viewModel: TaskDetailViewModel = viewModel() // Get the ViewModel
+            viewModel.updateDarkModePreference(Datasource.isDarkTheme(LocalContext.current))
+            val uiState: TaskDetailUiState by viewModel.uiState.collectAsState() // Get the UI state
+            ToDoAppTheme(darkTheme = uiState.darkMode) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     TodoListLayout()
                 }

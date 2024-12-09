@@ -4,5 +4,6 @@ import com.group1.todoapp.TaskData
 import com.group1.todoapp.TodoData
 
 data class TaskDetailUiState(
-    val todoData: TodoData = TodoData(0, "", mutableListOf())
+    val todoData: TodoData = TodoData(0, "", mutableListOf()),
+    val darkMode: Boolean = false
 )

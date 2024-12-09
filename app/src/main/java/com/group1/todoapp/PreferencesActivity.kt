@@ -2,6 +2,7 @@ package com.group1.todoapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -35,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.group1.todoapp.components.BackTitleTopAppBar
 import com.group1.todoapp.data.Datasource
 import com.group1.todoapp.data.PreferencesRepository
+import com.group1.todoapp.ui.TaskDetailUiState
 import com.group1.todoapp.ui.TaskDetailViewModel
 import com.group1.todoapp.ui.theme.ToDoAppTheme
 import kotlinx.coroutines.flow.first
@@ -45,7 +47,11 @@ class PreferencesActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ToDoAppTheme(darkTheme = Datasource.isDarkTheme()) {
+            val viewModel: TaskDetailViewModel = viewModel()
+            viewModel.updateDarkModePreference(Datasource.isDarkTheme(LocalContext.current))
+            val uiState: TaskDetailUiState by viewModel.uiState.collectAsState()
+
+            ToDoAppTheme(darkTheme = uiState.darkMode) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
@@ -56,6 +62,7 @@ class PreferencesActivity : ComponentActivity() {
                     }
                 ) { innerPadding ->
                     PreferencesLayout(
+                        isDarkMode = uiState.darkMode,
                         modifier = Modifier
                             .padding(innerPadding)
                     )
@@ -98,8 +105,10 @@ class PreferencesActivity : ComponentActivity() {
 
     @Composable
     fun PreferencesLayout(
+        isDarkMode: Boolean,
         modifier: Modifier = Modifier
     ) {
+        val viewModel: TaskDetailViewModel = viewModel()
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
         val repo = PreferencesRepository(context)
@@ -113,13 +122,9 @@ class PreferencesActivity : ComponentActivity() {
         ) {
             PreferenceCard(
                 name = "Dark Mode",
-                isChecked = Datasource.isDarkTheme(),
+                isChecked = isDarkMode,
                 onCheckedChange = {
-                    scope.launch {
-                        repo.setDarkMode(repo.isDarkMode.first() ?: false)
-                    }
-                    finish()
-                    startActivity(intent)
+                    viewModel.onDarkModePreferenceChange(!isDarkMode, context)
                 }
             )
         }
@@ -129,7 +134,7 @@ class PreferencesActivity : ComponentActivity() {
     @Composable
     fun PreferencesPreview() {
         ToDoAppTheme {
-            PreferencesLayout()
+            PreferencesLayout(false)
         }
     }
 }
