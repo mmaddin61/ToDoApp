@@ -171,7 +171,7 @@ class TodoListActivity : ComponentActivity() {
                 Button(
                     onClick = {
                         UserDataFactory.AddTodo(TodoData(0, title.value, tasks.value.map { task -> task.value }.toMutableList()))
-
+                        UserDataFactory.SaveUserData(filesDir.path)
                         val intent = Intent(this@TodoListActivity, MainActivity::class.java)
                         startActivity(intent)
                     },

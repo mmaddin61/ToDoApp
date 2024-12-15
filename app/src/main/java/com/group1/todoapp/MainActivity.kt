@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        UserDataFactory.SaveUserData(filesDir.path)
+        //UserDataFactory.SaveUserData(filesDir.path)
         UserDataFactory.LoadUserData(filesDir.path)
 
         enableEdgeToEdge()
@@ -78,6 +78,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        UserDataFactory.SaveUserData(filesDir.path)
     }
 
     override fun onDestroy() {
