@@ -7,6 +7,7 @@ import com.group1.todoapp.TaskData
 import com.group1.todoapp.TodoData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -181,12 +182,19 @@ object Datasource {
         }
     }
 
+    /*
     fun isDarkTheme(context: Context): Boolean {
         var darkMode: Boolean = false
         CoroutineScope(Dispatchers.Default).launch {
             darkMode = PreferencesRepository(context).isDarkMode.first() ?: false
         }
         return darkMode
+    }
+
+     */
+
+    fun isDarkTheme(context: Context): Flow<Boolean?> {
+        return PreferencesRepository(context).isDarkMode
     }
 
     fun setDarkTheme(darkTheme: Boolean, context: Context) {

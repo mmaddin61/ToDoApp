@@ -23,8 +23,11 @@ class HelpActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val viewModel: TaskDetailViewModel = viewModel()
-            viewModel.updateDarkModePreference(Datasource.isDarkTheme(LocalContext.current))
+            //viewModel.updateDarkModePreference(Datasource.isDarkTheme(LocalContext.current))
             val uiState: TaskDetailUiState by viewModel.uiState.collectAsState()
+            val context = LocalContext.current
+            val darkMode by Datasource.isDarkTheme(context).collectAsState(initial = false)
+            viewModel.updateDarkModePreference(darkMode ?: false)
             ToDoAppTheme(darkTheme = uiState.darkMode) {
                 HelpContent()
             }

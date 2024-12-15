@@ -34,8 +34,11 @@ class TodoListActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val viewModel: TaskDetailViewModel = viewModel() // Get the ViewModel
-            viewModel.updateDarkModePreference(Datasource.isDarkTheme(LocalContext.current))
+            //viewModel.updateDarkModePreference(Datasource.isDarkTheme(LocalContext.current))
             val uiState: TaskDetailUiState by viewModel.uiState.collectAsState() // Get the UI state
+            val context = LocalContext.current
+            val darkMode by Datasource.isDarkTheme(context).collectAsState(initial = false)
+            viewModel.updateDarkModePreference(darkMode ?: false)
             ToDoAppTheme(darkTheme = uiState.darkMode) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     TodoListLayout()
