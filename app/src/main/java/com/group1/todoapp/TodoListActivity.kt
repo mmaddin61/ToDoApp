@@ -6,22 +6,26 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.group1.todoapp.components.TitleText
 import com.group1.todoapp.data.Datasource
 import com.group1.todoapp.ui.TaskDetailUiState
 import com.group1.todoapp.ui.TaskDetailViewModel
 import com.group1.todoapp.ui.theme.ToDoAppTheme
+import androidx.compose.material3.Text
 
 class TodoListActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,31 +79,50 @@ class TodoListActivity : ComponentActivity() {
 
     @Composable
     fun DisplayTask(title : MutableState<String>, desc : MutableState<String>) {
-        Row(
+        Box (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(Color(0xFF212121))
         ) {
-            TextField (
-                value = title.value,
-                onValueChange = { title.value = it } ,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
-            )
+            Column {
+                OutlinedTextField(
+                    value = title.value,
+                    onValueChange = { title.value = it },
+                    placeholder = { Text("Title", color = Color(0xFF9E9E9E), fontSize = 16.sp) },
+                    singleLine = true,
+                    textStyle = LocalTextStyle.current.copy(color = Color.White, fontSize = 18.sp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        cursorColor = Color.White,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            TextField(
-                value = desc.value,
-                onValueChange = { desc.value = it },
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
-            )
+                Box(Modifier.fillMaxWidth().height(1.dp).background(Color(0xFF424242)))
+
+                OutlinedTextField(
+                    value = desc.value,
+                    onValueChange = { desc.value = it },
+                    placeholder = { Text("Description", color = Color(0xFF9E9E9E), fontSize = 14.sp) },
+                    singleLine = true,
+                    textStyle = LocalTextStyle.current.copy(color = Color.White, fontSize = 18.sp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        cursorColor = Color.White,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent
+                    ),
+                    modifier = Modifier.fillMaxWidth().height(80.dp)
+                )
+            }
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
     }
 
     @Composable
@@ -133,8 +156,7 @@ class TodoListActivity : ComponentActivity() {
 
                 Button(
                     onClick = {
-                        tasks.value += mutableStateOf(TaskData("task ${tasks.value.count()}", "", false))
-                        Log.i("TODOLIST", "Adding Task")
+                        tasks.value += mutableStateOf(TaskData("", "", false))
                     },
                     modifier = Modifier
                         .padding(16.dp)
