@@ -51,13 +51,12 @@ class UserDataFactory {
             Log.d("USER_FACTORY", "Loading user data...")
 
             val file = File(path, USER_DATA_FILE)
-
-            Log.d("USER_FACTORY", file.readText())
-
             if (!file.exists()) {
                 file.createNewFile()
                 return;
             }
+
+            Log.d("USER_FACTORY", file.readText())
 
             userTodoData.clear()
 
