@@ -53,6 +53,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         //UserDataFactory.SaveUserData(filesDir.path)
+        if (!UserDataFactory.dataFileExists(filesDir.path)) {
+            UserDataFactory.SaveUserData(filesDir.path)
+        }
         UserDataFactory.LoadUserData(filesDir.path)
 
         enableEdgeToEdge()

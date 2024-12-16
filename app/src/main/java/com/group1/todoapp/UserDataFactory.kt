@@ -18,6 +18,11 @@ class UserDataFactory {
 
         private val userTodoData = mutableMapOf<Int, TodoData>()
 
+        fun dataFileExists(path: String): Boolean {
+            val file = File(path, USER_DATA_FILE)
+            return file.exists()
+        }
+
         fun AddTodo(todo : TodoData) {
             todo.id = currentUserId++
             userTodoData[todo.id] = todo

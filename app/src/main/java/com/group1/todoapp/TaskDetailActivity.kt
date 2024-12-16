@@ -51,6 +51,7 @@ class TaskDetailActivity : ComponentActivity() {
             viewModel.updateDarkModePreference(darkMode ?: false)
 
             ToDoAppTheme(darkTheme = uiState.darkMode) {
+                UserDataFactory.LoadUserData(filesDir.path)
                 val toDoDataIndex = intent.getIntExtra("toDoListIndex", 0) // Get the index of the to-do list to be displayed
                 val toDoData: TodoData = UserDataFactory.GetTodo(toDoDataIndex) // Get to-do list data using the index
 
@@ -96,7 +97,7 @@ class TaskDetailActivity : ComponentActivity() {
                 Checkbox(
                     checked = task.finished,
                     onCheckedChange = {
-                        viewModel.onTaskFinishedChange(task, !task.finished)
+                        viewModel.onTaskFinishedChange(task, !task.finished, filesDir.path)
                     },
                     modifier = Modifier
                         .padding(start = 10.dp)

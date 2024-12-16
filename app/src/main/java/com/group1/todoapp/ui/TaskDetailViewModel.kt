@@ -25,7 +25,8 @@ class TaskDetailViewModel : ViewModel() {
      */
     fun onTaskFinishedChange(
         task: TaskData,
-        isChecked: Boolean
+        isChecked: Boolean,
+        dataPath: String
     ) {
         val taskIndex = _uiState.value.todoData.tasks.indexOf(task) // Get the specified task's index
         if (taskIndex != -1) { // Check if the task exists; indexOf returns -1 if the element was not found
@@ -39,6 +40,7 @@ class TaskDetailViewModel : ViewModel() {
             )
             updateTaskDetailState(newToDoData) // Update UI state
             UserDataFactory.UpdateTodo(toDoData.id, toDoData)
+            UserDataFactory.SaveUserData(dataPath)
         } else {
             Log.e(TAG, "Task named '${task.title}' not found!")
         }
