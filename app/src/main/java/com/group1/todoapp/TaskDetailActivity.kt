@@ -22,8 +22,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -78,7 +81,7 @@ class TaskDetailActivity : ComponentActivity() {
 
     @Composable
     fun TaskCard(
-        task: TaskData
+        title : String, finished : MutableState < Boolean >
     ) {
         val viewModel: TaskDetailViewModel = viewModel()
         ElevatedCard(
@@ -94,19 +97,19 @@ class TaskDetailActivity : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = task.finished,
+                    checked = finished.value,
                     onCheckedChange = {
-                        viewModel.onTaskFinishedChange(task, !task.finished)
+                        finished.value = !finished.value;
                     },
                     modifier = Modifier
                         .padding(start = 10.dp)
                 )
                 var decoration: TextDecoration? = null
-                if (task.finished) {
+                if (finished.value) {
                     decoration = TextDecoration.LineThrough
                 }
                 Text(
-                    text = task.title,
+                    text = title,
                     fontStyle = FontStyle.Italic,
                     textDecoration = decoration,
                     modifier = Modifier
@@ -129,18 +132,21 @@ class TaskDetailActivity : ComponentActivity() {
         }
     }
 
-
     @Composable
-    fun TaskCardList(
-        tasks: List<TaskData>
-    ) {
+    fun TaskCardList(id: Int) {
+        val todoData = remember { mutableStateOf(UserDataFactory.GetTodo(id)) }
+        val tasks = remember { todoData.value.tasks.map { it }.toMutableList() }
+
         LazyColumn(
             modifier = Modifier.padding(start = 50.dp, end = 50.dp, top = 10.dp)
         ) {
-            items(tasks) {task ->
-                TaskCard(
-                    task = task
-                )
+            items(todoData.value.tasks) { task ->
+                val taskFinish = remember { mutableStateOf(task.finished) }
+                TaskCard(task.title, taskFinish)
+
+                task.finished = taskFinish.value
+
+                todoData.value = TodoData(todoData.value.id, todoData.value.title, tasks.toMutableList())
             }
         }
     }
@@ -155,9 +161,7 @@ class TaskDetailActivity : ComponentActivity() {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TaskCardList(
-                tasks = toDoData.tasks
-            )
+            TaskCardList(toDoData.id)
         }
     }
 
